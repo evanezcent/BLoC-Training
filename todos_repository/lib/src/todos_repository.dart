@@ -1,5 +1,8 @@
-library todos_repository;
+import 'models/model.dart';
 
-export 'src/firebase_todos_repository.dart';
-export 'src/models/models.dart';
-export 'src/todos_repository.dart';
+abstract class TodosRespository {
+  Stream<List<Todo>> todos();
+  Future<void> addNewTodo(Todo todo);
+  Future<void> deleteTodo(Todo todo);
+  Future<void> updateTodo(Todo todo);
+}
