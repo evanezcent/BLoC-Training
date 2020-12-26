@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fire/bloc/todos/todos_event.dart';
 import 'package:fire/bloc/todos/todos_state.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:todos_repository/todos_repository.dart';
@@ -10,7 +11,7 @@ class TodosBloc extends Bloc<TodosEvent, TodosState> {
   final TodosRespository _todosRepository;
   StreamSubscription _subscription;
 
-  TodosBloc(TodosRespository todosRespository)
+  TodosBloc({@required TodosRespository todosRespository})
       : assert(todosRespository != null),
         _todosRepository = todosRespository,
         super(TodosLoading());

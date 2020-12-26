@@ -1,16 +1,20 @@
+import 'package:fire/bloc/filtered/filtered_bloc.dart';
+import 'package:fire/bloc/stat/stat_bloc.dart';
+import 'package:fire/bloc/tab/tab_bloc.dart';
+import 'package:fire/bloc/todos/todos_bloc.dart';
+import 'package:fire/bloc/todos/todos_event.dart';
+import 'package:fire/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_firestore_todos/blocs/authentication_bloc/bloc.dart';
 import 'package:todos_repository/todos_repository.dart';
-import 'package:flutter_firestore_todos/blocs/blocs.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_firestore_todos/screens/screens.dart';
-import 'package:user_repository/user_repository.dart';
+
+import 'package:todos_repository/todos_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Bloc.observer = SimpleBlocObserver();
+  Bloc.observer = BlocObserver();
   await Firebase.initializeApp();
   runApp(TodosApp());
 }
@@ -18,61 +22,43 @@ void main() async {
 class TodosApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<AuthenticationBloc>(
-          create: (context) {
-            return AuthenticationBloc(
-              userRepository: FirebaseUserRepository(),
-            )..add(AppStarted());
-          },
-        ),
-        BlocProvider<TodosBloc>(
-          create: (context) {
-            return TodosBloc(
-              todosRepository: FirebaseTodosRepository(),
-            )..add(LoadTodos());
-          },
-        )
-      ],
+    return BlocProvider(
+      create: (context) => TodosBloc(
+        todosRespository: FirebaseTodoRepo(),
+      )..add(LoadTodos()),
       child: MaterialApp(
-        title: 'Firestore Todos',
+        title: 'Bloc Todos App',
         routes: {
           '/': (context) {
-            return BlocBuilder(
-              builder: (context, state) {
-                  return MultiBlocProvider(
-                    providers: [
-                      BlocProvider<TabBloc>(
-                        create: (context) => TabBloc(),
-                      ),
-                      BlocProvider<FilteredTodosBloc>(
-                        create: (context) => FilteredTodosBloc(
-                          todosBloc: BlocProvider.of<TodosBloc>(context),
-                        ),
-                      ),
-                      BlocProvider<StatsBloc>(
-                        create: (context) => StatsBloc(
-                          todosBloc: BlocProvider.of<TodosBloc>(context),
-                        ),
-                      ),
-                    ],
-                    child: HomeScreen(),
-                  );
-                return Center(child: CircularProgressIndicator());
-              },
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<TabBloc>(
+                  create: (context) => TabBloc(),
+                ),
+                BlocProvider<FilteredTodosBloc>(
+                  create: (context) => FilteredTodosBloc(
+                    todosBloc: BlocProvider.of<TodosBloc>(context),
+                  ),
+                ),
+                BlocProvider<StatsBloc>(
+                  create: (context) => StatsBloc(
+                    todosBloc: BlocProvider.of<TodosBloc>(context),
+                  ),
+                ),
+              ],
+              child: HomeScreen(),
             );
           },
-          '/addTodo': (context) {
-            return AddEditScreen(
-              onSave: (task, note) {
-                BlocProvider.of<TodosBloc>(context).add(
-                  AddTodo(Todo(task, note: note)),
-                );
-              },
-              isEditing: false,
-            );
-          },
+          // '/addTodo': (context) {
+          //   return AddEditScreen(
+          //     onSave: (task, note) {
+          //       BlocProvider.of<TodosBloc>(context).add(
+          //         AddTodo(Todo(task, note: note)),
+          //       );
+          //     },
+          //     isEditing: false,
+          //   );
+          // },
         },
       ),
     );
