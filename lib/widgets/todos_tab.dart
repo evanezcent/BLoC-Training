@@ -20,7 +20,7 @@ class TodosTab extends StatelessWidget {
           return ListView.builder(
             itemCount: todos.length,
             itemBuilder: (context, index) {
-              TodoItem(
+              return TodoItem(
                 todo: todos[index],
                 onDismissed: (direction) {
                   BlocProvider.of<TodosBloc>(context)
@@ -48,6 +48,8 @@ class TodosTab extends StatelessWidget {
               );
             },
           );
+        } else {
+          return Container();
         }
       },
     );

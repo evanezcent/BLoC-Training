@@ -3,6 +3,7 @@ import 'package:fire/bloc/stat/stat_bloc.dart';
 import 'package:fire/bloc/tab/tab_bloc.dart';
 import 'package:fire/bloc/todos/todos_bloc.dart';
 import 'package:fire/bloc/todos/todos_event.dart';
+import 'package:fire/screens/add_screen.dart';
 import 'package:fire/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
@@ -49,16 +50,16 @@ class TodosApp extends StatelessWidget {
               child: HomeScreen(),
             );
           },
-          // '/addTodo': (context) {
-          //   return AddEditScreen(
-          //     onSave: (task, note) {
-          //       BlocProvider.of<TodosBloc>(context).add(
-          //         AddTodo(Todo(task, note: note)),
-          //       );
-          //     },
-          //     isEditing: false,
-          //   );
-          // },
+          '/addTodo': (context) {
+            return AddEditScreen(
+              onSave: (task, note) {
+                BlocProvider.of<TodosBloc>(context).add(
+                  AddTodo(Todo(task, note: note)),
+                );
+              },
+              isEditing: false,
+            );
+          },
         },
       ),
     );
